@@ -16,6 +16,7 @@ def scrape():
     if Query:
         get_search_infos(Query)
         
+        
     else:
         return redirect("/")
     # return render_template("scrapepage.html", searchingBy=place, checkin = checkin, checkout = checkout, adults = adults)
