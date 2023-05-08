@@ -16,19 +16,19 @@ db = conn.cursor()
 
 def select_search():
     print("####### select_search #######")
-    
-    sql_select = 'select topic from quest_topic'
+    # 13 GridLayout ㄹㅇ d없음
+    # 28 tablelayout 1개 있음
+    sql_select = 'select topic from quest_topic where idx > 36'
     db.execute(sql_select)
     quest_topic = db.fetchall()
     return quest_topic
 
 
 def insert_search(data):
-    
-    sql_insert = 'insert into topic_content (topic_title,topic_content) values (%s, %s)'
-    val = (data[0], data[1])
+    sql_insert = 'insert into topic_content (topic_title, topic_content, topic_reply_main, topic_reply_re) values (%s, %s, %s, %s)'
+    val = (data[0], data[1], data[2], data[3])
     
     db.execute(sql_insert, val)
     conn.commit()
-    print("DB저장 성공 - topic_content")
+    print("DB저장 성공")
 

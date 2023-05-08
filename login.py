@@ -14,9 +14,9 @@ driver.implicitly_wait(3)
 def login_click():
     
     driver.get(url)
-    time.sleep(1)
+    time.sleep(2)
     driver.find_element(By.CSS_SELECTOR, '#wf_frame_inputUserId').send_keys('lyujin@inswave.com')
-    time.sleep(1)
+    time.sleep(2)
     driver.find_element(By.CSS_SELECTOR, '#wf_frame_inputPassWord').send_keys('Wlsehf0014@')
     time.sleep(1)
     driver.find_element(By.CSS_SELECTOR, '#wf_frame_btnLogin').click()
@@ -26,23 +26,21 @@ def login_click():
 
 def detail_search():
     searchText = select_search()
-    print("############### searchText ##############")
-    print(searchText[0][0])
-    print("############### searchText.size ##############")
-    print(len(searchText))
+    
     for detail in searchText:
+        print(detail[0])
         detail_page(detail[0])    
 
 
 
 def detail_page(searchText):
     detail = 4;
-    print("############ detail_page ################")
+    
     print(searchText)
-    for i in range(1, 11):
+    for i in range(1, 21):
         URL = "https://wtech.inswave.kr/websquare/websquare.html?w2xPath=/ws/index.xml&inPath=/ws/qna/qna_list.xml&searchType=title&searchText=" + searchText + "&curPage=" + str(i)
         driver.get(f"{URL}")
-        print("################ URL ##################")
+        print("################ URL : " + str(i) + " #######################3")
         print(URL)
         
         for j in range(detail, 10):
@@ -53,8 +51,6 @@ def detail_page(searchText):
                 continue
             else :
                 img = img.get_attribute('src')
-                print("############ img ############3333")
-                print(img)
 
                 blue = "https://wtech.inswave.kr/images/ico_grd_blu.gif"
                 
@@ -66,7 +62,6 @@ def detail_page(searchText):
                     data = []
                     
                     title = driver.find_element(By.CSS_SELECTOR, detail_name).text
-                    print("################## title ################")
                     print(title)
                     data.append(title)
                     driver.find_element(By.CSS_SELECTOR, detail_name).click()
@@ -76,7 +71,48 @@ def detail_page(searchText):
                     start = content.find('<< 개요 >>')
                     last = content.find('<< 버전 및 빌드일 >>')
                     final_content = content[start:last]
+                    
                     data.append(final_content)
+                    
+                    reply_main_num = 0
+                    reply_main_name = "#wf_frame_generator1_" + str(reply_main_num) + "_content"
+                    final_reply_main = ""
+                    final_reply_re = ""
+                    while(True):
+                        try:
+                            reply_main = driver.find_element(By.CSS_SELECTOR, reply_main_name).text
+                            
+                            check = reply_main.find('?')
+                            if check == -1:
+                                temp = final_reply_main
+                                final_reply_main = temp + reply_main + "\n\n" 
+                            
+                            reply_re_num = 0
+                            reply_re_name = "#wf_frame_generator1_" + str(reply_main_num) + "_generator2_" + str(reply_re_num) + "_content"
+                            
+                            while(True):
+                                try:
+                                    reply_re = driver.find_element(By.CSS_SELECTOR, reply_re_name).text
+                                    
+                                    check = reply_re.find('?')
+                                    
+                                    if check == -1:
+                                        temp = final_reply_re
+                                        final_reply_re = temp + reply_re + "\n\n" 
+                                        
+                                    reply_re_num += 1
+                                    reply_re_name = "#wf_frame_generator1_" + str(reply_main_num) + "_generator2_" + str(reply_re_num) + "_content"
+                                except:
+                                    break
+                                
+                            reply_main_num += 1
+                            reply_main_name = "#wf_frame_generator1_" + str(reply_main_num) + "_content"
+                            
+
+                        except:
+                            break
+                    data.append(final_reply_main)
+                    data.append(final_reply_re)
                     
                     insert_search(data)
                     
